@@ -1,28 +1,28 @@
 var through = require('through2');
 var gutil = require('gulp-util');
-var jsonminify = require('jsonminify');
+var jsonminify = require('jsonminify2');
 
-module.exports = function () {
-    'use strict';
-    
-    return through.obj(function (file, encoding, callback) {
-        if (file.isNull()) {
-            this.push(file);
-            return callback();
-        }
+module.exports = function() {
+  'use strict';
 
-        if (file.isStream()) {
-            this.emit('error', new gutil.PluginError('gulp-jsonminify', 'Streaming not supported'));
-            return callback();
-        }
+  return through.obj(function(file, encoding, callback) {
+    if (file.isNull()) {
+      this.push(file);
+      return callback();
+    }
 
-        try {
-            file.contents = new Buffer(jsonminify(file.contents.toString()).toString());
-        } catch (err) {
-            this.emit('error', new gutil.PluginError('gulp-jsonminify', err));
-        }
+    if (file.isStream()) {
+      this.emit('error', new gutil.PluginError('gulp-jsonminify', 'Streaming not supported'));
+      return callback();
+    }
 
-        this.push(file);
-        callback();
-    });
+    try {
+      file.contents = new Buffer(jsonminify(file.contents.toString()).toString());
+    } catch (err) {
+      this.emit('error', new gutil.PluginError('gulp-jsonminify', err));
+    }
+
+    this.push(file);
+    callback();
+  });
 };
